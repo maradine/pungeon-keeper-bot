@@ -20,7 +20,7 @@ public class PungeonKeeper extends ListenerAdapter {
     private static String puntEmoteName = "punt";
     private static String pungeonDwellerRoleName = "PUNGEON DWELLER";
     private static String botdevChannelName = "botdev";
-    private static ZonedDateTime lastPungeonEmpty;
+    private static ZonedDateTime lastPungeonEmpty = null;
     private static Properties props = null;
 
     public static void main(String[] args) throws LoginException {
@@ -43,7 +43,7 @@ public class PungeonKeeper extends ListenerAdapter {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         builder.setToken(token);
         builder.addEventListener(new PungeonKeeper());
-        builder.buildAsync();
+        builder.build();
 
         System.out.println("Instantiation complete.");
     }
