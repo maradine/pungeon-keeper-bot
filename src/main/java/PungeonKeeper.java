@@ -19,7 +19,7 @@ public class PungeonKeeper extends ListenerAdapter {
     private static int puntThreshold = 3;
     private static String puntEmoteName = "punt";
     private static String pungeonDwellerRoleName = "PUNGEON DWELLER";
-    private static String botdevChannelName = "botdev";
+    private static long botdevChannelID = 497662058481844224L;
     private static ZonedDateTime lastPungeonEmpty = null;
     private static Properties props = null;
 
@@ -57,7 +57,8 @@ public class PungeonKeeper extends ListenerAdapter {
         }
 
         System.out.println("We received a message from " +
-                event.getAuthor().getName() + ": " +
+                event.getAuthor().getName() + " in " +
+                event.getChannel().getName() + ": " +
                 event.getMessage().getContentDisplay()
         );
 
@@ -72,7 +73,8 @@ public class PungeonKeeper extends ListenerAdapter {
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
-        System.out.println("we received a reaction from " + event.getMember().getEffectiveName());
+        System.out.println("We received a reaction from " + event.getMember().getEffectiveName() +
+                "in " + event.getChannel().getName());
 
         // is this reaction a punt request?
         if (event.getReaction().getReactionEmote().getName().equals(puntEmoteName)) {
@@ -107,7 +109,8 @@ public class PungeonKeeper extends ListenerAdapter {
     private void puntMember(Member member, TextChannel notifyChannel) {
         List<Role> probablePDRoles = member.getGuild().getRolesByName(pungeonDwellerRoleName, false);
         if (probablePDRoles.size() != 1) {
-            // TODO message the botdev channel that something is wrong and fail silently
+            member.getGuild().getTextChannelById(botdevChannelID).sendMessage("Found more than one Pungeon" +
+                    " Dweller role while enumerating roles by name.").queue();
             // there should only ever be one role that matches.
             return;
         }
@@ -147,12 +150,13 @@ public class PungeonKeeper extends ListenerAdapter {
         //is the old timestamp before 6am today?
         //is the current timestamp after 6am today?
         if (lastPungeonEmpty.isBefore(edge) && now.isAfter(edge)) {
-            System.out.println("Empty the pungeon!");
+            guild.getTextChannelById(botdevChannelID).sendMessage("Emptying the Pungeon.").queue();
             //find every member of the pungeon dweller role and remove them
 
             List<Role> probablePDRoles = guild.getRolesByName(pungeonDwellerRoleName, false);
             if (probablePDRoles.size() != 1) {
-                // TODO message the botdev channel that something is wrong and fail silently
+                guild.getTextChannelById(botdevChannelID).sendMessage("Found more than one Pungeon Dweller role" +
+                        " while enumerating roles by name.").queue();
                 // there should only ever be one role that matches.
                 return;
             }
