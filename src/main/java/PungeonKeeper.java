@@ -51,54 +51,64 @@ public class PungeonKeeper extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        try {
+            //ignore ourselves (and other bots)
+            if (event.getAuthor().isBot()) {
+                return;
+            }
 
-        //ignore ourselves (and other bots)
-        if (event.getAuthor().isBot()) {
-            return;
+            System.out.println("We received a message from " +
+                    event.getAuthor().getName() + " in " +
+                    event.getChannel().getName() + ": " +
+                    event.getMessage().getContentDisplay()
+            );
+
+            if (event.getMessage().getContentRaw().equals("!ping")) {
+                event.getChannel().sendMessage("Pong!").queue();
+            }
+
+            emptyPungeonCheck(event.getGuild());
+        } catch (Exception e) {
+            System.out.println("Unhandled exception in onMessageReceived: " + e.getMessage() + " backtrace:");
+            e.printStackTrace();
         }
-
-        System.out.println("We received a message from " +
-                event.getAuthor().getName() + " in " +
-                event.getChannel().getName() + ": " +
-                event.getMessage().getContentDisplay()
-        );
-
-        if(event.getMessage().getContentRaw().equals("!ping")) {
-            event.getChannel().sendMessage("Pong!").queue();
-        }
-
-        emptyPungeonCheck(event.getGuild());
     }
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
-        System.out.println("We received a reaction from " + event.getMember().getEffectiveName() +
-                "in " + event.getChannel().getName());
+        try {
+            System.out.println("We received a reaction from " + event.getMember().getEffectiveName() +
+                    "in " + event.getChannel().getName());
 
-        // is this reaction a punt request?
-        if (event.getReaction().getReactionEmote().getName().equals(puntEmoteName)) {
-            //event.getChannel().sendMessage("punt request from "+ event.getMember().getEffectiveName()).queue();
+            // is this reaction a punt request?
+            if (event.getReaction().getReactionEmote().getName().equals(puntEmoteName)) {
+                //event.getChannel().sendMessage("punt request from "+ event.getMember().getEffectiveName()).queue();
 
-            // what was the original message this reaction is attached to?
-            long messageID = event.getReaction().getMessageIdLong();
-            Message originalMessage = event.getChannel().getMessageById(messageID).complete();
+                // what was the original message this reaction is attached to?
+                long messageID = event.getReaction().getMessageIdLong();
+                Message originalMessage = event.getChannel().getMessageById(messageID).complete();
 
-            String messageText = originalMessage.getContentRaw();
-            System.out.println("message id " + messageText);
+                String messageText = originalMessage.getContentRaw();
+                System.out.println("message id " + messageText);
 
-            // how many punt reactions does this original message now have?
-            // note that we have to get the count here because the count on the reaction event object
-            // itself is immutable, effectively stateless, and carries a null count.
-            List<MessageReaction> reactionList = originalMessage.getReactions();
-            for (MessageReaction r : reactionList) {
-                if (r.getReactionEmote().getName().equals("punt")) {
-                    int puntCount = r.getCount();
-                    //event.getChannel().sendMessage("punt count now at "+ puntCount).queue();
-                    if (puntCount >= puntThreshold) {
-                        puntMember(originalMessage.getMember(), event.getTextChannel());
+                // how many punt reactions does this original message now have?
+                // note that we have to get the count here because the count on the reaction event object
+                // itself is immutable, effectively stateless, and carries a null count.
+                List<MessageReaction> reactionList = originalMessage.getReactions();
+                for (MessageReaction r : reactionList) {
+                    if (r.getReactionEmote().getName().equals("punt")) {
+                        int puntCount = r.getCount();
+                        //event.getChannel().sendMessage("punt count now at "+ puntCount).queue();
+                        if (puntCount >= puntThreshold) {
+                            puntMember(originalMessage.getMember(), event.getTextChannel());
+                        }
+                        break;
                     }
                 }
             }
+        } catch (Exception e) {
+            System.out.println("Unhandled exception in onMessageReactionAdd: " + e.getMessage() + " backtrace:");
+            e.printStackTrace();
         }
     }
 
@@ -121,6 +131,7 @@ public class PungeonKeeper extends ListenerAdapter {
         for (Role r : roles) {
             if (r.equals(pdRole)) {
                 inPungeon = true;
+                break;
             }
         }
 
