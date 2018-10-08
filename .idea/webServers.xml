@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="e80b5d40-a418-4abe-b422-f3c8c47789f0" name="fkpk services" url="">
+        <fileTransfer host="services.fkpk.org" port="22" privateKey="D:\Dropbox\keys\fkpk.ppk" rootFolder="/home/ec2-user/pungeonkeeper" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
