@@ -18,6 +18,7 @@ public class PungeonKeeper extends ListenerAdapter {
 
     private static int puntThreshold = 3;
     private static String puntEmoteName = "punt";
+    private static int edgeHour = 7;
     private static String pungeonDwellerRoleName = "PUNGEON DWELLER";
     private static long botdevChannelID = 497662058481844224L;
     private static ZonedDateTime lastPungeonEmpty = null;
@@ -67,8 +68,6 @@ public class PungeonKeeper extends ListenerAdapter {
         }
 
         emptyPungeonCheck(event.getGuild());
-
-
     }
 
     @Override
@@ -100,9 +99,6 @@ public class PungeonKeeper extends ListenerAdapter {
                     }
                 }
             }
-
-
-
         }
     }
 
@@ -140,7 +136,7 @@ public class PungeonKeeper extends ListenerAdapter {
         ZonedDateTime now = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
         //System.out.println("now: " + now);
 
-        ZonedDateTime edge = ZonedDateTime.now().withHour(6)
+        ZonedDateTime edge = ZonedDateTime.now().withHour(edgeHour)
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0)
