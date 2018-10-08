@@ -34,7 +34,7 @@ public class PungeonKeeper extends ListenerAdapter {
             props.load(fis);
         } catch (IOException ioe) {
             System.out.println("Attempted to load file input stream from file - ioexception");
-            System.out.println(ioe);
+            System.out.println(ioe.toString());
             System.exit(1);
         }
 
@@ -138,14 +138,14 @@ public class PungeonKeeper extends ListenerAdapter {
     private void emptyPungeonCheck(Guild guild) {
 
         ZonedDateTime now = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
-        System.out.println("now: " + now);
+        //System.out.println("now: " + now);
 
         ZonedDateTime edge = ZonedDateTime.now().withHour(6)
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0)
                 .withZoneSameInstant(ZoneId.of("UTC"));
-        System.out.println("edge: " + edge);
+        //System.out.println("edge: " + edge);
 
         //is the old timestamp before 6am today?
         //is the current timestamp after 6am today?
@@ -164,7 +164,7 @@ public class PungeonKeeper extends ListenerAdapter {
 
             List<Member> memberList = guild.getMembers();
             for (Member m: memberList) {
-                guild.getController().removeSingleRoleFromMember(m, pdRole);
+                guild.getController().removeSingleRoleFromMember(m, pdRole).queue();
             }
 
             //reset the empty time
