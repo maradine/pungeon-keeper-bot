@@ -21,6 +21,7 @@ public class PungeonKeeper extends ListenerAdapter {
     private static int edgeHour = 7;
     private static String pungeonDwellerRoleName = "PUNGEON DWELLER";
     private static long botdevChannelID = 497662058481844224L;
+    private static long pungeonChannelID = 426149390550564870L;
     private static ZonedDateTime lastPungeonEmpty = null;
     private static Properties props = null;
 
@@ -101,6 +102,9 @@ public class PungeonKeeper extends ListenerAdapter {
                         //event.getChannel().sendMessage("punt count now at "+ puntCount).queue();
                         if (puntCount >= puntThreshold) {
                             puntMember(originalMessage.getMember(), event.getTextChannel());
+                            event.getGuild().getTextChannelById(pungeonChannelID).sendMessage("Welcome " +
+                                    originalMessage.getMember().getEffectiveName() + ". This is what did you:").queue();
+                            event.getGuild().getTextChannelById(pungeonChannelID).sendMessage(originalMessage.getContentDisplay()).queue();
                         }
                         break;
                     }
