@@ -81,6 +81,7 @@ public class PungeonKeeper extends ListenerAdapter {
             System.out.println("We received a reaction from " + event.getMember().getEffectiveName() +
                     "in " + event.getChannel().getName());
 
+
             // is this reaction a punt request?
             if (event.getReaction().getReactionEmote().getName().equals(puntEmoteName)) {
                 //event.getChannel().sendMessage("punt request from "+ event.getMember().getEffectiveName()).queue();
@@ -91,6 +92,11 @@ public class PungeonKeeper extends ListenerAdapter {
 
                 String messageText = originalMessage.getContentRaw();
                 System.out.println("message id " + messageText);
+
+                //ignore reactions to ourselves (and other bots)
+                if (originalMessage.getAuthor().isBot()) {
+                    return;
+                }
 
                 // how many punt reactions does this original message now have?
                 // note that we have to get the count here because the count on the reaction event object
