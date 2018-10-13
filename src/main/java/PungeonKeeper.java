@@ -101,10 +101,7 @@ public class PungeonKeeper extends ListenerAdapter {
                         int puntCount = r.getCount();
                         //event.getChannel().sendMessage("punt count now at "+ puntCount).queue();
                         if (puntCount >= puntThreshold) {
-                            puntMember(originalMessage.getMember(), event.getTextChannel());
-                            event.getGuild().getTextChannelById(pungeonChannelID).sendMessage("Welcome " +
-                                    originalMessage.getMember().getEffectiveName() + ". This is what did you:").queue();
-                            event.getGuild().getTextChannelById(pungeonChannelID).sendMessage(originalMessage.getContentDisplay()).queue();
+                            puntMember(originalMessage.getMember(), event.getTextChannel(), originalMessage);
                         }
                         break;
                     }
@@ -116,7 +113,7 @@ public class PungeonKeeper extends ListenerAdapter {
         }
     }
 
-    private void puntMember(Member member, TextChannel notifyChannel) {
+    private void puntMember(Member member, TextChannel notifyChannel, Message originalMessage) {
         List<Role> probablePDRoles = member.getGuild().getRolesByName(pungeonDwellerRoleName, false);
         if (probablePDRoles.size() != 1) {
             member.getGuild().getTextChannelById(botdevChannelID).sendMessage("Found more than one Pungeon" +
@@ -143,6 +140,11 @@ public class PungeonKeeper extends ListenerAdapter {
         if (!inPungeon) {
             member.getGuild().getController().addSingleRoleToMember(member, pdRole).complete();
             notifyChannel.sendMessage(member.getEffectiveName() + " has been escorted to the Pungeon.").queue();
+
+            notifyChannel.getGuild().getTextChannelById(pungeonChannelID).sendMessage("Welcome " +
+                    originalMessage.getMember().getEffectiveName() + ". This is what did you:").queue();
+            notifyChannel.getGuild().getTextChannelById(pungeonChannelID).sendMessage(originalMessage.getContentDisplay()).queue();
+
         }
     }
 
